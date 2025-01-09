@@ -4,7 +4,6 @@ from mordred import HydrogenBond, SLogP, Polarizability, Weight, Lipinski
 HA = HydrogenBond.HBondAcceptor()
 HD = HydrogenBond.HBondDonor()
 logP = SLogP.SLogP()
-#SA = surface_area.SurfaceArea()
 PoA = Polarizability.APol()
 PoB = Polarizability.BPol()
 M = Weight.Weight()
@@ -50,11 +49,3 @@ for mol in związki:
     plik.write('\n')
     print()
 plik.close()
-
-# import pandas as pd
-# import matplotlib.pyplot as plt
-# df = pd.read_csv(r'C:\Users\admin\Documents\pajton\.pum\pum_mordred.csv', header= 0, index_col=0)
-# print(df.info())
-# df.plot()
-# plt.xticks(rotation=90)
-# plt.show()
