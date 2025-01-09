@@ -1,0 +1,64 @@
+# Importujemy niezbędne biblioteki
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# Wczytaj dane z pliku CSV
+data = pd.read_csv('pum_mordred.csv')
+
+# Przygotuj dane
+X = data.iloc[:, :-1]  # Wszystkie kolumny oprócz ostatniej (cechy)
+y = data.iloc[:, -1]   # Ostatnia kolumna (etykiety)
+
+# Skalowanie cech
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Podział na dane treningowe i testowe (80% na trening, 20% na test)
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.20, random_state=42)
+
+# Stwórz model lasu losowego
+model = RandomForestClassifier(
+    n_estimators=110,          # Liczba drzew w lesie
+    max_depth=10,              # Maksymalna głębokość drzewa
+    min_samples_split=3,       # Minimalna liczba próbek do podziału w węźle
+    min_samples_leaf=1,        # Minimalna liczba próbek w liściu
+    random_state=42
+)
+
+# Trening modelu
+model.fit(X_train, y_train)
+
+# Przeprowadź predykcję na danych testowych
+y_pred = model.predict(X_test)
+
+# Wyświetl dokładność na danych testowych
+print("Dokładność na danych testowych:", accuracy_score(y_test, y_pred))
+
+# 1. Macierz pomyłek
+cm = confusion_matrix(y_test, y_pred)
+
+plt.figure(figsize=(6, 4))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['False', 'True'], yticklabels=['False', 'True'])
+plt.title('Macierz pomyłek')
+plt.xlabel('Przewidywane')
+plt.ylabel('Rzeczywiste')
+plt.show()
+
+# 2. Wizualizacja ważności cech
+feature_importances = model.feature_importances_
+features = data.columns[:-1]  # Wszystkie cechy oprócz ostatniej kolumny
+
+# Sortowanie cech według ważności
+sorted_idx = feature_importances.argsort()
+
+plt.figure(figsize=(8, 6))
+plt.barh(features[sorted_idx], feature_importances[sorted_idx], color='teal')
+plt.title('Ważność cech w modelu Random Forest')
+plt.xlabel('Ważność')
+plt.ylabel('Cechy')
+plt.show()
