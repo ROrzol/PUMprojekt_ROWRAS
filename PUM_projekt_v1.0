@@ -61,3 +61,4 @@ plt.title('Ważność cech w modelu Random Forest')
 plt.xlabel('Ważność')
 plt.ylabel('Cechy')
 plt.show()
+
